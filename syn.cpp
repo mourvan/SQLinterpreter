@@ -3,18 +3,20 @@
 #include <vector>
 #include "lex.h"
 #include "syn.h"
-#include "Table.h"
+#include <cstring>
+
 
 /*TODO - в процессе парсинга заполнять statement(where)-структуру, в случае удачного парса выполнить команду функциями из библиотеки
 		 CREATE, INSERT, DROP готовы,  */
 
-Parser::Parser() : i(0)
-{
-
-}
+//Parser::Parser() : i(0)
+//{
+//
+//}
 
 void Parser::SQL()
 {
+	i=0;
 	if 		(lex[i].type == LEX_SELECT) {i++; SELECT();}
 	else if (lex[i].type == LEX_INSERT) {i++; INSERT();}
 	else if (lex[i].type == LEX_UPDATE) {i++; UPDATE();}
@@ -71,6 +73,7 @@ void Parser::FIELD_LIST()
 
 void Parser::INSERT()
 {
+	s = &is; // current statement - insert-statement
 	if (lex[i].type==LEX_INTO)  {i++;}
 	else throw i;
 	if (lex[i].type==LEX_ID)    {i++;}
@@ -113,9 +116,10 @@ void Parser::DELETE()
 
 void Parser::CREATE()
 {
+	s = &cs; 
 	if (lex[i].type==LEX_TABLE)  {i++;}
 	else throw i;
-	if (lex[i].type==LEX_ID)    {i++;}
+	if (lex[i].type==LEX_ID)    {strcpy(cs.TableName,lex[i].value.c_str()); i++;}
 	else throw i;
 	if (lex[i].type==LEX_LPAREN){i++;}
 	else throw i;
@@ -130,27 +134,43 @@ void Parser::CREATE()
 
 void Parser::FIELD()
 {
-	if (lex[i].type==LEX_ID)  {i++;}
+	FieldDef temp;
+	if (lex[i].type==LEX_ID)  
+	{
+		strcpy(temp.name,lex[i].value.c_str()); 
+		i++;
+	}
 	else throw i;
-	if (lex[i].type==LEX_LONG)    {i++;}
+	if (lex[i].type==LEX_LONG)    
+	{
+		temp.type=Long;
+		i++;
+	}
 	else if(lex[i].type==LEX_TEXT) 
 	{
+		temp.type=Text;
 		i++;
 		if (lex[i].type==LEX_LPAREN)  {i++;}
 		else throw i;
-		if (lex[i].type==LEX_NUM || stol(lex[i].value)>0)  {i++;}  
+		if (lex[i].type==LEX_NUM || stol(lex[i].value)>0)  
+		{
+			temp.len=stol(lex[i].value); 
+			i++;
+		}  
 		else throw i;
 		if (lex[i].type==LEX_RPAREN)  {i++;}
 		else throw i;
 	}
 	else throw i;
+	cs.fields.push_back(temp);
 }
 
 void Parser::DROP()
 {
+	s = &ds;
 	if (lex[i].type==LEX_TABLE)  {i++;}
 	else throw i;
-	if (lex[i].type==LEX_ID)    {
+	if (lex[i].type==LEX_ID)    {strcpy(ds.TableName,lex[i].value.c_str());
 		i++;
 	}
 	else throw i;
@@ -166,6 +186,11 @@ int Parser::get_i() const
 	return i;
 }
 
+void Parser::run()
+{
+	s->run();
+}
+
 void create_statement::run() //vector<FieldDef>fields;
 {
 	TableStruct tstr;
@@ -173,6 +198,7 @@ void create_statement::run() //vector<FieldDef>fields;
 	tstr.fieldsDef = &fields[0];
 	cout << getErrorString(createTable(TableName,&tstr)) << endl;
 }
+
 
 void insert_statement::run()
 {
@@ -187,5 +213,5 @@ void insert_statement::run()
 
 void drop_statement::run()
 {
-	deleteTable(TableName);
+	cout << getErrorString(deleteTable(TableName)) << endl;
 }

@@ -1,28 +1,14 @@
-#include "Table.h"
+
+extern "C"
+{
+	#include "Table.h"
+}
 
 using namespace std;
 
-class Parser
-{
-	int i;
-	void SELECT();      //
-	void FIELD_LIST();  //DONE
-	void INSERT();      //DONE
-	void UPDATE();		//
-	void DELETE();		//
-	void CREATE();		//DONE
-	void FIELD();		//DONE
-	void DROP();		//DONE
-	void WHERE();		//
-public:
-	Parser();
-	void SQL();         //       
-	int get_i() const;
-};
-
 struct statement
 {
-	char* TableName;
+	char TableName[80];
 	virtual void run()=0;
 };
 
@@ -41,6 +27,33 @@ struct drop_statement : statement
 {
 	void run();
 };
+
+class Parser
+{
+	int i;
+	insert_statement is;
+	create_statement cs;
+	drop_statement ds;
+	statement *s;
+	/* основные */
+	void SELECT();      
+	void INSERT();      
+	void UPDATE();		
+	void DELETE();		
+	void CREATE();	//DONE	
+	void DROP();	//DONE
+	/* вспомогательные */
+	void FIELD_LIST(); 		
+	void WHERE();
+	void FIELD();		
+public:
+	//Parser();
+	void SQL();         //       
+	int get_i() const;
+	void run();
+};
+
+
 /*
 	CREATE TABLE Students (First_name TEXT (10),
 	Surname TEXT (15),

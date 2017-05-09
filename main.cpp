@@ -14,20 +14,27 @@ int main()
 	Parser ps;
 	try
 	{
-		
-		//lx.from_file("test2"); 
-		//lx.from_string("INSERT INTO Students ('Sergey', 'Ivanov', 18, '145-45-45')"); 
-		
-		/* если не вызваны from_file или from_string, читает из stdin */
-		
-		lx.process();
-		lx.printlex();
-		cout << "<---MAGIC BEGINS HERE--->" << endl;
-		ps.SQL();
-		if (lex[ps.get_i()].type == LEX_FINISH)
-			cout << "SUCCESS PARSING COMMAND" << endl;
-		else
-			throw ps.get_i();
+		while (lx.checkState()==true)
+		{
+			//lx.from_file("test2"); 
+			//lx.from_string("INSERT INTO Students ('Sergey', 'Ivanov', 18, '145-45-45')"); 
+
+			/* если не вызваны from_file или from_string, читает из stdin */
+			lx.process();
+			if (lx.isEmpty())
+				break;
+			//lx.printlex();
+			//cout << "<---MAGIC BEGINS HERE--->" << endl;
+			ps.SQL();
+			if (lex[ps.get_i()].type == LEX_FINISH)
+			{
+				cout << "SUCCESS PARSING COMMAND" << endl;
+				ps.run();
+			}
+
+			else
+				throw ps.get_i();
+		} 
 	} 
 	catch (int i)
 	{
@@ -39,4 +46,5 @@ int main()
 	}
 	return 0;
 }
+
 

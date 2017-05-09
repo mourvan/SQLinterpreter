@@ -123,6 +123,7 @@ extern vector<Lex>lex;
 
 class Lexer
 {
+	bool state = true;
 	int file;
 	string buf = "";
 	int look(char c) const;
@@ -132,6 +133,8 @@ public:
 	void from_string(string s); 
 	void printlex() const;
 	void process();
+	bool checkState() const;
+	bool isEmpty() const ;
 
 	//читаем символы в буфер до разделителя,кавычки или пробела
 	//если буфер не пустой

@@ -1,5 +1,5 @@
 #if !defined(_Table_h_)
-#define _Table_h
+#define _Table_h_
 
 #define MaxFieldNameLen 30 /* Максимальное число символов в названии поля */
 

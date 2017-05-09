@@ -50,10 +50,14 @@ void Lexer::process()
 {
 	char c,c1;
 	int i,i1;
+	lex.clear();
 	do							 //по строке
 	{
 		if ((c=getchar())== EOF)
+		{
+			state = false;
 			break;
+		}
 		if ((i = look(c)) != -1) //встретился разделитель
 		{
 			//	cout << i << endl;
@@ -130,7 +134,6 @@ void Lexer::process()
 	}
 	while (c!='\n');
 	lex.emplace_back(LEX_FINISH);
-	//lex.emplace_back(LEX_FINISH);
 }
 
 void Lexer::from_file(string filename) //перенаправляем ввод с stdin в файл filename
@@ -151,5 +154,18 @@ void Lexer::from_string(string s)  //создаем файл .temp со стро
 	write(file,s.c_str(), s.length());
 	close(file);
     from_file(".temp");
+}
+
+bool Lexer::checkState() const
+{
+	return state;
+}
+
+bool Lexer::isEmpty() const
+{
+	if (lex.empty()==true || lex[0].type==LEX_FINISH)
+		return true;
+	else 
+		return false;
 }
 

@@ -49,7 +49,7 @@ typedef struct {
 
 struct Table {
 	int fd;
-	FieldStruct * pFieldStruct;
+	FieldStruct * pFieldStruct; //THandle->pFieldStruct[int]->fieldName - название поля THandle->tableInfo->fieldNumber
 	struct TableInfo {
 		long dataOffset;
 		long fieldNumber; /* duplicates pFieldStruct->numOfFields */

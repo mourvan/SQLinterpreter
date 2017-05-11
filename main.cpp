@@ -44,6 +44,10 @@ int main()
 	{
 		cout << "COULDNT OPEN THE FILE '" << s << "'" << endl;
 	}
+	catch (Errors err)
+	{
+		cout << "Error: " << getErrorString(err) << endl;
+	}
 	return 0;
 }
 

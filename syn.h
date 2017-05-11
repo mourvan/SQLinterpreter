@@ -8,18 +8,20 @@ using namespace std;
 
 struct statement
 {
+	Errors err;
 	char TableName[80];
 	virtual void run()=0;
 };
 
 struct insert_statement : statement
 {
+	vector<string>fieldname;
 	void run();
 };
 
 struct create_statement : statement
 {
-	vector<FieldDef>fields; //содержит int numOfFields;struct FieldDef *fieldsDef;
+	vector<FieldDef>fielddef; //содержит int numOfFields;struct FieldDef *fieldsDef;
 	void run();
 };
 

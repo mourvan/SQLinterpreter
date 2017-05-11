@@ -162,7 +162,7 @@ void Parser::FIELD()
 		else throw i;
 	}
 	else throw i;
-	cs.fields.push_back(temp);
+	cs.fielddef.push_back(temp);
 }
 
 void Parser::DROP()
@@ -191,27 +191,48 @@ void Parser::run()
 	s->run();
 }
 
-void create_statement::run() //vector<FieldDef>fields;
+void create_statement::run() //vector<FieldDef>fielddef;
 {
 	TableStruct tstr;
-	tstr.numOfFields = fields.size();
-	tstr.fieldsDef = &fields[0];
-	cout << getErrorString(createTable(TableName,&tstr)) << endl;
+	tstr.numOfFields = fielddef.size();
+	tstr.fieldsDef = &fielddef[0];
+	if((err = createTable(TableName,&tstr)) != OK)
+		throw err;
+	fielddef.clear();
 }
 
 
 void insert_statement::run()
 {
-	//THandle *tableHandle
-	//openTable(char *tableName, THandle *tableHandle);
-	//createNew(THandle tableHandle)
-	//putTextNew(THandle tableHandle, char *fieldName, char *value);
-	//putLongNew(THandle tableHandle, char * fieldName, long value);
-	//insertzNew(THandle tableHandle);
-	//closeTable(THandle tableHandle);
+	//long l;
+	//char buf[80];
+	//THandle tableHandle;
+	//if((err = openTable(TableName, &tableHandle)) != OK)
+	//	throw err;
+	//if((err = createNew(tableHandle)) != OK)
+	//	throw err;
+	//cout << tableHandle->pFieldStruct->fieldName << tableHandle->tableInfo.fieldNumber << endl;
+	/*for (auto i = fieldname.begin(); i != fieldname.end(); i++)  //vector<string>fieldname;
+	{
+		try
+		{
+			l=stol
+		}
+		catch(invalid_argument)
+		{
+			
+		}
+	}													
+	putTextNew(tableHandle, char *fieldName, char *value);
+	putLongNew(tableHandle, char *fieldName, long value);
+	insertzNew(tableHandle);
+	closeTable(tableHandle);
+	fieldname.clear();
+	*/
 }
 
 void drop_statement::run()
 {
-	cout << getErrorString(deleteTable(TableName)) << endl;
+	if((err = deleteTable(TableName)) != OK)
+		throw err;
 }

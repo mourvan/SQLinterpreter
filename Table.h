@@ -50,7 +50,7 @@ enum FieldType
 
 /* Эта структура задает описание одного поля таблицы */
 
-struct FieldDef //нужен вектор fielddef
+struct FieldDef
 {
   char name[MaxFieldNameLen]; /* имя данного поля */
   enum FieldType type; /* тип поля */

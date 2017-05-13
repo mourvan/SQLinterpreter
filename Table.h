@@ -3,6 +3,49 @@
 
 #define MaxFieldNameLen 30 /* Максимальное число символов в названии поля */
 
+typedef unsigned Bool; /* Булевский тип */    
+
+#define TRUE 1
+#define FALSE 0
+
+/* Следующий тип определяет возможные типы данных, хранимых в таблицах */
+
+enum FieldType
+{
+  Text,     /* строка ( не более 256 символов) */
+  Long,     /* целое длинное знаковое число */
+  Logic
+};
+
+typedef struct {
+	char fieldName [MaxFieldNameLen];
+	enum FieldType type;
+	long len;
+	char * pNewValue;
+	char * pEditValue;
+} FieldStruct;
+
+struct Table {
+	int fd;
+	FieldStruct * pFieldStruct; //THandle->pFieldStruct[int]->fieldName - название поля THandle->tableInfo->fieldNumber
+	struct TableInfo {
+		long dataOffset;
+		long fieldNumber; /* duplicates pFieldStruct->numOfFields */ 
+		long recordSize;
+		long totalRecordNumber; /* including deleted records */
+		long recordNumber;
+		long firstRecordOffset;
+		long lastRecordOffset;
+		long firstDeletedOffset;
+	} tableInfo;
+	long currentPos;
+	Bool editFlag;
+	struct links {
+		long prevOffset;
+		long nextOffset;
+	} links;
+};
+
 enum Errors /* Определяет возможные коды ошибок при работе с таблицами */
 {
   OK,             /* Ошибок нет */
@@ -39,14 +82,8 @@ typedef unsigned Bool; /* Булевский тип */
 #define TRUE 1
 #define FALSE 0
 
-/* Следующий тип определяет возможные типы данных, хранимых в таблицах */
 
-enum FieldType
-{
-  Text,     /* строка ( не более 256 символов) */
-  Long,     /* целое длинное знаковое число */
-  Logic
-};
+
 
 /* Эта структура задает описание одного поля таблицы */
 

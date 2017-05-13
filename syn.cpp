@@ -76,14 +76,14 @@ void Parser::INSERT()
 	s = &is; // current statement - insert-statement
 	if (lex[i].type==LEX_INTO)  {i++;}
 	else throw i;
-	if (lex[i].type==LEX_ID)    {i++;}
+	if (lex[i].type==LEX_ID)    { strcpy(is.TableName,lex[i].value.c_str()); i++;}
 	else throw i;
 	if (lex[i].type==LEX_LPAREN){i++;}
 	else throw i;
 
 	while(lex[i-1].type!=LEX_RPAREN)
 	{
-		if(lex[i].type==LEX_STRING || lex[i].type==LEX_NUM)  {i++;}
+		if(lex[i].type==LEX_STRING || lex[i].type==LEX_NUM)  {is.fieldvalue.push_back(lex[i].value); i++;}
 		else throw i;
 
 		if(lex[i].type==LEX_COMMA || lex[i].type==LEX_RPAREN){i++;}
@@ -204,31 +204,46 @@ void create_statement::run() //vector<FieldDef>fielddef;
 
 void insert_statement::run()
 {
-	//long l;
-	//char buf[80];
-	//THandle tableHandle;
-	//if((err = openTable(TableName, &tableHandle)) != OK)
-	//	throw err;
-	//if((err = createNew(tableHandle)) != OK)
-	//	throw err;
-	//cout << tableHandle->pFieldStruct->fieldName << tableHandle->tableInfo.fieldNumber << endl;
-	/*for (auto i = fieldname.begin(); i != fieldname.end(); i++)  //vector<string>fieldname;
+	int i1=0;
+	long l;
+	char buf[80];
+	THandle tableHandle;
+	FieldStruct * curr;
+	if((err = openTable(TableName, &tableHandle)) != OK)
+		throw err;
+		
+	if((unsigned)tableHandle->tableInfo.fieldNumber != fieldvalue.size())
 	{
+		err = FieldNotFound;
+		closeTable(tableHandle);
+		throw err;
+	}	
+	
+	if((err = createNew(tableHandle)) != OK)
+		throw err;
+	//cout << tableHandle->pFieldStruct->fieldName << tableHandle->tableInfo.fieldNumber << endl;
+	for (auto i = fieldvalue.begin(); i != fieldvalue.end(); i++)  //vector<string>fieldvalue;
+	{
+		curr = (tableHandle->pFieldStruct)+i1;
 		try
 		{
-			l=stol
+			l=stol(fieldvalue[i1]);
+			if((err = putLongNew(tableHandle, curr->fieldName, l)) != OK)
+				{closeTable(tableHandle); throw err;}
 		}
 		catch(invalid_argument)
 		{
-			
+			strcpy(buf, fieldvalue[i1].c_str());
+			if((err = putTextNew(tableHandle, curr->fieldName, buf)) != OK)
+				{closeTable(tableHandle); throw err;}
 		}
-	}													
-	putTextNew(tableHandle, char *fieldName, char *value);
-	putLongNew(tableHandle, char *fieldName, long value);
-	insertzNew(tableHandle);
-	closeTable(tableHandle);
-	fieldname.clear();
-	*/
+		i1++;
+	}
+	if((err = insertzNew(tableHandle)) != OK)
+		{throw err; closeTable(tableHandle);}
+	if((err = closeTable(tableHandle)) != OK)
+		throw err;
+	fieldvalue.clear();
 }
 
 void drop_statement::run()

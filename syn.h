@@ -15,7 +15,7 @@ struct statement
 
 struct insert_statement : statement
 {
-	vector<string>fieldname;
+	vector<string>fieldvalue;
 	void run();
 };
 

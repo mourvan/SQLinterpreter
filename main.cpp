@@ -28,7 +28,7 @@ int main()
 			ps.SQL();
 			if (lex[ps.get_i()].type == LEX_FINISH)
 			{
-				cout << "SUCCESS PARSING COMMAND" << endl;
+				//cout << "SUCCESS PARSING COMMAND" << endl;
 				ps.run();
 			}
 
@@ -38,15 +38,15 @@ int main()
 	} 
 	catch (int i)
 	{
-		cout << "ERROR ON LEXEME " << i << ":" << endl << "TYPE: " << lex[i].GetType() << endl << "VALUE:" << lex[i].GetValue() << endl;
+		cout << "\033[1;31mError: \033[0minvalid lexeme at position " << i << ":" << endl << "TYPE: " << lex[i].GetType() << endl << "VALUE:" << lex[i].GetValue() << endl;
 	}
 	catch (string s)
 	{
-		cout << "COULDNT OPEN THE FILE '" << s << "'" << endl;
+		cout << "\033[1;31mError: \033[0mCould not open the file '" << s << "'" << endl;
 	}
 	catch (Errors err)
 	{
-		cout << "Error: " << getErrorString(err) << endl;
+		cout << "\033[1;31mError: \033[0m" << getErrorString(err) << endl;
 	}
 	return 0;
 }

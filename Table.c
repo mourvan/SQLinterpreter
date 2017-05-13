@@ -39,34 +39,7 @@ static char FILE_SIGNATURE[] = "\033\032DataFile\033\032~~~";
 /*   FILE_SIGNAT    TableInfo    Fld1          FldN		*/
 /********************************************************/
 
-typedef struct {
-	char fieldName [MaxFieldNameLen];
-	enum FieldType type;
-	long len;
-	char * pNewValue;
-	char * pEditValue;
-} FieldStruct;
 
-struct Table {
-	int fd;
-	FieldStruct * pFieldStruct; //THandle->pFieldStruct[int]->fieldName - название поля THandle->tableInfo->fieldNumber
-	struct TableInfo {
-		long dataOffset;
-		long fieldNumber; /* duplicates pFieldStruct->numOfFields */
-		long recordSize;
-		long totalRecordNumber; /* including deleted records */
-		long recordNumber;
-		long firstRecordOffset;
-		long lastRecordOffset;
-		long firstDeletedOffset;
-	} tableInfo;
-	long currentPos;
-	Bool editFlag;
-	struct links {
-		long prevOffset;
-		long nextOffset;
-	} links;
-};
 
 
 /* Возможные сообщения об ошибках */

@@ -48,7 +48,7 @@ void Lexer::printlex() const
 
 void Lexer::process()
 {
-	char c,c1;
+	int c,c1;
 	int i,i1;
 	lex.clear();
 	do							 //по строке
@@ -92,7 +92,7 @@ void Lexer::process()
 				//	buf.push_back(c1);
 				lex.emplace_back((lextype)(i+20));
 			}
-		} else if (c==' ' || c=='\n')			//пробел
+		} else if (c==' ' || c=='\n' || c=='\r')			//пробел
 		{
 			if (buf != "")
 			{
@@ -132,7 +132,7 @@ void Lexer::process()
 		} else
 			buf.push_back(c);
 	}
-	while (c!='\n');
+	while (c!='\n' && c!='\r');
 	lex.emplace_back(LEX_FINISH);
 }
 

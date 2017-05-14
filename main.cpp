@@ -16,7 +16,7 @@ int main()
 	{
 		while (lx.checkState()==true)
 		{
-			//lx.from_file("test2"); 
+			//lx.from_file("ourtest.txt"); 
 			//lx.from_string("INSERT INTO Students ('Sergey', 'Ivanov', 18, '145-45-45')"); 
 
 			/* если не вызваны from_file или from_string, читает из stdin */
@@ -24,12 +24,14 @@ int main()
 			if (lx.isEmpty())
 				break;
 			//lx.printlex();
+			//cout << (int)(lex[12].value[0]);
 			//cout << "<---MAGIC BEGINS HERE--->" << endl;
 			ps.SQL();
 			if (lex[ps.get_i()].type == LEX_FINISH)
 			{
 				//cout << "SUCCESS PARSING COMMAND" << endl;
 				ps.run();
+				cout << "\033[1;32mSuccess\033[0m" << endl;
 			}
 
 			else

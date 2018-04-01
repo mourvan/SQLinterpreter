@@ -34,7 +34,7 @@ int Lexer::look(char c) const
 
 int Lexer::look(string s) const
 {
-	for (int i=0;i<19;i++)
+	for (int i=0;i<20;i++)
 		if (s == keywords[i])
 			return i;
 	return -1;

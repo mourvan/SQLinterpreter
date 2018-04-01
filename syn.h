@@ -1,9 +1,18 @@
+#include "lex.h"
 extern "C" 
 {
 	#include "Table.h"
 }
 
 using namespace std;
+
+typedef vector <Lex> poliz;
+
+struct const_list 
+{
+	lextype type;
+	vector <string> mas;
+};
 
 enum where_type {
 	IN,
@@ -14,23 +23,15 @@ enum where_type {
 
 struct where_clause
 {
+	bool neg;
 	where_type type;
-	where_clause();
-};
-
-struct wherein_clause : where_clause
-{
-	wherein_clause();
-};
-
-struct wherelike_clause : where_clause
-{
-	wherelike_clause();
-};
-
-struct wherelogic_clause : where_clause
-{
-	wherelogic_clause();
+	/* LIKE */
+	string field;
+	string pattern;
+	/*  IN  */
+	poliz expr;
+	const_list cl;
+	/* LOG  */
 };
 
 struct statement
@@ -61,8 +62,7 @@ struct drop_statement : statement    /*DONE*/
 
 struct select_statement : statement  
 {
-	where_clause* w;
-	bool times=false;
+	bool times;
 	vector<string>fieldname;
 	//vector<FieldDef>newfielddef; открываем исходную таблицу, создаем новую на основе струкруры старой, пока не дошли до конца копируем в буфер из исходной таблицы запись,  записываем в буфер новой таблицы при помощи getText, пихаем в новую таблицу
 	
@@ -84,13 +84,12 @@ enum Errors getFieldType(THandle tableHandle, char *fieldName, enum FieldType *p
 
 struct update_statement : statement
 {
-	where_clause* w;
+	poliz expr;
 	void run();
 };
 
 struct delete_statement : statement
 {
-	where_clause* w;
 	void run();
 };
 
@@ -99,6 +98,7 @@ class Parser
 {
 	int i;
 	statement *s;
+	
 	/* основные */
 	void SELECT();      
 	void INSERT();  //DONE  
@@ -109,9 +109,16 @@ class Parser
 	/* вспомогательные */
 	void FIELD_LIST(select_statement *ss); 		
 	void WHERE();
-	void FIELD(create_statement *cs);		
+	void FIELD(create_statement *cs);
+	void EXPRESSION(); //переводит в полиз
+	void ADD_LONG();   //перевод слагаемых в полиз
+	void MUL_LONG();   //перевод множителей в полиз
+	lextype ALL_EXPR();
+	const_list CONST_LIST(lextype expected_type);
 public:
 	//Parser();
+	where_clause where;
+	poliz pol;
 	void SQL();         //       
 	int get_i() const;
 	void run();

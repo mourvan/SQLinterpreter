@@ -1,9 +1,14 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "lex.h"
 #include "syn.h"
-
+/* 
+ * ИТОГО:
+ * лексический анализатор
+ * синтаксическаий анализатор (кроме where-логическое выражение)
+ * связь с библиотекой, выполнение команд CREATE, DROP, INSERT, SELECT (все where воспринимает как where-all)
+ * НЕ ГОТОВЫ: синтаксический анализ where-логическое выражение, выполнение where метки, UPDATE, DELETE
+ */
 
 using namespace std;
 
